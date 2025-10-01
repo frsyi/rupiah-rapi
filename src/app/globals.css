@@ -12,6 +12,7 @@
   --font-mono: var(--font-geist-mono);
 
   --color-primary: #1290a0;
+  --color-primary-dark: #0f7c8a;
 }
 
 @media (prefers-color-scheme: dark) {
