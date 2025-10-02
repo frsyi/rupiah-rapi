@@ -100,7 +100,7 @@ export default function Dashboard() {
 
       <div className="bg-white p-6 rounded-2xl shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="font-semibold text-gray-700 flex items-center gap-2">
+          <h2 className="font-semibold text-gray-700 text-lg flex items-center gap-2">
             <PlusCircle className="w-5 h-5 text-primary" /> Catat Keuangan
           </h2>
           <button
@@ -135,7 +135,7 @@ export default function Dashboard() {
 
       <div className="bg-white p-6 rounded-2xl shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="font-semibold text-gray-700 flex items-center gap-2">
+          <h2 className="font-semibold text-gray-700 text-lg flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-primary" /> Belajar Keuangan
           </h2>
           <span className="bg-yellow-100 text-yellow-700 text-xs font-medium px-3 py-1 rounded-full">

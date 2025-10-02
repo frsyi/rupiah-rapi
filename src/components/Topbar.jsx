@@ -36,32 +36,3 @@ export default function Topbar() {
     </header>
   );
 }
-
-// "use client";
-
-// import { usePathname } from "next/navigation";
-// import { UserCircle } from "lucide-react";
-
-// export default function Topbar() {
-//   const pathname = usePathname();
-
-//   const pageTitles = {
-//     "/": "📊 Dashboard",
-//     "/transactions": "💸 Transaksi",
-//     "/debt": "📑 Utang & Piutang",
-//     "/education": "📚 Ruang Belajar",
-//     "/rupy": "🤖 Rupy AI",
-//   };
-
-//   const title = pageTitles[pathname] || "RupiahRapi";
-
-//   return (
-//     <header className="bg-white shadow p-4 px-8 flex items-center justify-between sticky top-0 z-10">
-//       <h2 className="text-gray-700 text-lg font-semibold">{title}</h2>
-//       <div className="flex items-center gap-2">
-//         <UserCircle className="w-6 h-6 text-gray-700" />
-//         <span className="text-gray-700">Susan</span>
-//       </div>
-//     </header>
-//   );
-// }
