@@ -51,9 +51,20 @@ export default function Transaksi() {
 
     await addTransaction(newTransaction);
 
+    toast.success("Transaksi berhasil ditambahkan", {
+      description: `${jenis} - Rp ${Number(jumlah).toLocaleString("id-ID")}`,
+    });
+
     // reset form
     setJumlah("");
     setKeterangan("");
+  };
+
+  const handleDelete = async (id) => {
+    await deleteTransaction(id);
+    toast.error("Transaksi dihapus", {
+      description: `Transaksi dengan ID ${id} berhasil dihapus`,
+    });
   };
 
   // state filter
@@ -213,7 +224,7 @@ export default function Transaksi() {
                   </TableCell>
                   <TableCell className="text-center">
                     <button
-                      onClick={() => deleteTransaction(t.id)}
+                      onClick={() => handleDelete(t.id)}
                       className="text-red-500 hover:text-red-700 font-medium cursor-pointer"
                     >
                       Hapus
