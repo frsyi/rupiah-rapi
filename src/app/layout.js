@@ -33,7 +33,7 @@ export default function RootLayout({ children }) {
           <main className="flex-1 p-12 overflow-y-auto bg-gray-100">
             {children}
           </main>
-          <Toaster />
+          <Toaster richColors position="top-right" />
         </div>
       </body>
     </html>

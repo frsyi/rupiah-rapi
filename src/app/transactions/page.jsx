@@ -17,6 +17,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function Transaksi() {
   const {
@@ -32,6 +43,9 @@ export default function Transaksi() {
   const [kategori, setKategori] = useState("Usaha");
   const [jumlah, setJumlah] = useState("");
   const [keterangan, setKeterangan] = useState("");
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
     fetchTransactions();
@@ -53,6 +67,7 @@ export default function Transaksi() {
 
     toast.success("Transaksi berhasil ditambahkan", {
       description: `${jenis} - Rp ${Number(jumlah).toLocaleString("id-ID")}`,
+      className: "bg-green-600 text-white border-none",
     });
 
     // reset form
@@ -60,11 +75,15 @@ export default function Transaksi() {
     setKeterangan("");
   };
 
-  const handleDelete = async (id) => {
-    await deleteTransaction(id);
-    toast.error("Transaksi dihapus", {
-      description: `Transaksi dengan ID ${id} berhasil dihapus`,
-    });
+  const confirmDelete = async () => {
+    if (selectedId) {
+      await deleteTransaction(selectedId);
+      toast.success("Transaksi dihapus", {
+        description: `Transaksi berhasil dihapus`,
+      });
+      setSelectedId(null);
+      setOpenDialog(false);
+    }
   };
 
   // state filter
@@ -113,6 +132,8 @@ export default function Transaksi() {
             type="number"
             placeholder="Jumlah"
             className="border p-2 rounded col-span-2"
+            min={0}
+            required
             value={jumlah}
             onChange={(e) => setJumlah(e.target.value)}
           />
@@ -120,6 +141,7 @@ export default function Transaksi() {
             type="text"
             placeholder="Keterangan"
             className="border p-2 rounded col-span-2"
+            required
             value={keterangan}
             onChange={(e) => setKeterangan(e.target.value)}
           />
@@ -223,12 +245,46 @@ export default function Transaksi() {
                     Rp {t.jumlah.toLocaleString("id-ID")}
                   </TableCell>
                   <TableCell className="text-center">
-                    <button
-                      onClick={() => handleDelete(t.id)}
-                      className="text-red-500 hover:text-red-700 font-medium cursor-pointer"
+                    <Dialog
+                      open={openDialog && selectedId === t.id}
+                      onOpenChange={(isOpen) => {
+                        if (!isOpen) {
+                          setOpenDialog(false);
+                          setSelectedId(null);
+                        }
+                      }}
                     >
-                      Hapus
-                    </button>
+                      <DialogTrigger asChild>
+                        <button
+                          onClick={() => {
+                            setSelectedId(t.id);
+                            setOpenDialog(true);
+                          }}
+                          className="text-red-500 hover:text-red-700 font-medium cursor-pointer"
+                        >
+                          Hapus
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Konfirmasi Hapus</DialogTitle>
+                          <DialogDescription>
+                            Apakah Anda yakin ingin menghapus transaksi ini?
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter className="flex justify-end gap-2">
+                          <Button
+                            variant="outline"
+                            onClick={() => setOpenDialog(false)}
+                          >
+                            Batal
+                          </Button>
+                          <Button variant="destructive" onClick={confirmDelete}>
+                            Hapus
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   </TableCell>
                 </TableRow>
               ))
