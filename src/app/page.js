@@ -7,7 +7,17 @@ import {
   TrendingUp,
   Wallet,
 } from "lucide-react";
-import { useEffect } from "react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useTransactionStore } from "@/store/useTransactionStore";
 
@@ -50,11 +60,51 @@ export default function Dashboard() {
   const progress = pemasukan > 0 ? Math.round((profit / pemasukan) * 100) : 0;
 
   const riwayatCatatan = [...transactions]
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // urutkan terbaru
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     .slice(0, 5);
 
+  const [filterBulan, setFilterBulan] = useState(
+    new Date().toISOString().slice(0, 7)
+  );
+
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter((t) => {
+      const tanggal = new Date(t.tanggal);
+      const bulanTransaksi = tanggal.toISOString().slice(0, 7);
+      return bulanTransaksi === filterBulan && t.kategori === "Usaha";
+    });
+  }, [transactions, filterBulan]);
+
+  const data = useMemo(() => {
+    const daysInMonth = new Date(
+      parseInt(filterBulan.split("-")[0]),
+      parseInt(filterBulan.split("-")[1]),
+      0
+    ).getDate();
+
+    const daily = Array.from({ length: daysInMonth }, (_, i) => ({
+      hari: i + 1,
+      pemasukan: 0,
+      pengeluaran: 0,
+      profit: 0,
+    }));
+
+    filteredTransactions.forEach((t) => {
+      const tanggal = new Date(t.tanggal).getDate();
+      if (t.jenis === "Pemasukan") {
+        daily[tanggal - 1].pemasukan += Number(t.jumlah);
+      } else {
+        daily[tanggal - 1].pengeluaran += Number(t.jumlah);
+      }
+      daily[tanggal - 1].profit =
+        daily[tanggal - 1].pemasukan - daily[tanggal - 1].pengeluaran;
+    });
+
+    return daily;
+  }, [filteredTransactions, filterBulan]);
+
   const user = {
-    name: "Ibu Siti",
+    name: "Susan",
     points: 120,
   };
 
@@ -76,7 +126,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Saldo Pribadi */}
         <div className="bg-gradient-to-r from-pink-500 to-rose-400 rounded-2xl shadow-md p-6 flex items-center gap-4 text-white">
           <div className="bg-white/20 p-3 rounded-full">
             <Receipt className="text-white w-6 h-6" />
@@ -87,6 +136,49 @@ export default function Dashboard() {
               Rp {saldoPribadi.toLocaleString("id-ID")}
             </p>
           </div>
+        </div>
+      </div>
+
+      <div className="bg-white p-6 rounded-2xl shadow-md">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="font-semibold text-gray-700 text-lg flex items-center gap-2">
+            <TrendingUp className="text-green-600 w-5 h-5" /> Laporan Usaha
+            Harian
+          </h2>
+          <input
+            type="month"
+            className="border rounded p-2 text-sm"
+            value={filterBulan}
+            onChange={(e) => setFilterBulan(e.target.value)}
+          />
+        </div>
+
+        <div className="w-full h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="hari" />
+              <YAxis />
+              <Tooltip
+                formatter={(value) => `Rp ${value.toLocaleString("id-ID")}`}
+                labelFormatter={(hari) => `Hari ${hari}`}
+                cursor={{ fill: "#cce9ea" }}
+              />
+              <Legend />
+              <Bar
+                dataKey="pemasukan"
+                fill="#1290a0"
+                name="Pemasukan"
+                radius={[4, 4, 0, 0]}
+              />
+              <Bar
+                dataKey="pengeluaran"
+                fill="#ec4899"
+                name="Pengeluaran"
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
@@ -181,7 +273,7 @@ export default function Dashboard() {
 
       <div className="bg-gradient-to-r from-pink-500 to-rose-400 p-6 rounded-2xl shadow-md text-white">
         <h2 className="text-lg font-bold flex items-center gap-2 mb-2">
-          🤖Tanya Rupy AI
+          🤖 Tanya Rupy AI
         </h2>
         <p className="text-sm mb-5">
           Bingung atur keuangan atau usaha? Tanya langsung ke Rupy AI, asisten
