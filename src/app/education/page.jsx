@@ -12,7 +12,7 @@ export default function BelajarKeuangan() {
       judul: "Mengatur Pemasukan & Pengeluaran",
       deskripsi:
         "Belajar cara mencatat pemasukan dan pengeluaran agar lebih teratur.",
-      gambar: "/images/1.jpg",
+      gambar: "/images/education/1.jpg",
       status: "belum",
     },
     {
@@ -20,21 +20,21 @@ export default function BelajarKeuangan() {
       judul: "Pentingnya Dana Darurat",
       deskripsi:
         "Kenapa dana darurat itu penting untuk menghadapi keadaan tak terduga.",
-      gambar: "/images/2.jpg",
+      gambar: "/images/education/2.jpg",
       status: "belum",
     },
     {
       id: 3,
       judul: "Cara Menabung dengan Konsisten",
       deskripsi: "Tips supaya bisa menabung dengan teratur tanpa terasa berat.",
-      gambar: "/images/3.jpg",
+      gambar: "/images/education/3.jpg",
       status: "belum",
     },
     {
       id: 4,
       judul: "Investasi Dasar untuk Pemula",
       deskripsi: "Dasar-dasar investasi yang perlu diketahui pemula.",
-      gambar: "/images/4.jpg",
+      gambar: "/images/education/4.jpg",
       status: "belum",
     },
     {
@@ -42,7 +42,7 @@ export default function BelajarKeuangan() {
       judul: "Menghindari Hutang Konsumtif",
       deskripsi:
         "Cara mengendalikan keuangan agar tidak terjebak hutang konsumtif.",
-      gambar: "/images/5.jpg",
+      gambar: "/images/education/5.jpg",
       status: "belum",
     },
   ];
