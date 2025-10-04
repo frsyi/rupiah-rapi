@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
@@ -14,6 +15,7 @@ export default function BelajarKeuangan() {
         "Belajar cara mencatat pemasukan dan pengeluaran agar lebih teratur.",
       gambar: "/images/education/1.jpg",
       status: "belum",
+      link: "https://mediakeuangan.kemenkeu.go.id/article/show/7-tips-mengatur-keuangan-agar-tabunganmu-terus-bertambah",
     },
     {
       id: 2,
@@ -22,6 +24,7 @@ export default function BelajarKeuangan() {
         "Kenapa dana darurat itu penting untuk menghadapi keadaan tak terduga.",
       gambar: "/images/education/2.jpg",
       status: "belum",
+      link: "https://mediakeuangan.kemenkeu.go.id/article/show/dana-darurat-apakah-penting",
     },
     {
       id: 3,
@@ -29,6 +32,7 @@ export default function BelajarKeuangan() {
       deskripsi: "Tips supaya bisa menabung dengan teratur tanpa terasa berat.",
       gambar: "/images/education/3.jpg",
       status: "belum",
+      link: "https://pina.id/artikel/detail/10-tips-jitu-agar-kamu-bisa-konsisten-menabung-p6irxvrc4a7",
     },
     {
       id: 4,
@@ -36,6 +40,7 @@ export default function BelajarKeuangan() {
       deskripsi: "Dasar-dasar investasi yang perlu diketahui pemula.",
       gambar: "/images/education/4.jpg",
       status: "belum",
+      link: "https://banksaqu.co.id/blog/8-jenis-investasi-untuk-pemula",
     },
     {
       id: 5,
@@ -44,19 +49,16 @@ export default function BelajarKeuangan() {
         "Cara mengendalikan keuangan agar tidak terjebak hutang konsumtif.",
       gambar: "/images/education/5.jpg",
       status: "belum",
+      link: "https://www.treasury.id/hati-hati-bahaya-utang-konsumtif-dan-cara-jitu-menghindarinya",
     },
   ];
 
   const [materi, setMateri] = useState(materiAwal);
   const [poin, setPoin] = useState(0);
 
-  const handleBaca = (id) => {
+  const handleSelesai = (id) => {
     setMateri((prev) =>
-      prev.map((m) =>
-        m.id === id
-          ? { ...m, status: m.status === "belum" ? "proses" : "selesai" }
-          : m
-      )
+      prev.map((m) => (m.id === id ? { ...m, status: "selesai" } : m))
     );
 
     const item = materi.find((m) => m.id === id);
@@ -71,7 +73,6 @@ export default function BelajarKeuangan() {
 
   return (
     <div className=" space-y-10">
-      {/* Header */}
       <div className="bg-gradient-to-r from-pink-500 to-purple-500 p-6 rounded-2xl shadow-md text-white">
         <h1 className="text-3xl font-bold">📚 Belajar Keuangan</h1>
         <p className="mt-2 text-pink-100">
@@ -89,14 +90,12 @@ export default function BelajarKeuangan() {
         <Progress value={progress} className="mt-3 h-3 bg-pink-200" />
       </div>
 
-      {/* Daftar Materi */}
       <div className="grid md:grid-cols-3 gap-8">
         {materi.map((m) => (
           <div
             key={m.id}
             className="bg-white border rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-transform hover:-translate-y-1"
           >
-            {/* gambar */}
             <div className="relative w-full h-48">
               <Image
                 src={m.gambar}
@@ -107,7 +106,6 @@ export default function BelajarKeuangan() {
               />
             </div>
 
-            {/* isi */}
             <div className="p-5">
               <h2 className="text-lg font-bold text-gray-800 mb-2">
                 {m.judul}
@@ -117,16 +115,23 @@ export default function BelajarKeuangan() {
               </p>
 
               <div className="flex items-center justify-between">
-                <Button
-                  onClick={() => handleBaca(m.id)}
-                  className="bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg px-4 py-2"
+                <Link
+                  href={m.link}
+                  passHref
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  {m.status === "belum"
-                    ? "Mulai Baca"
-                    : m.status === "proses"
-                    ? "Tandai Selesai"
-                    : "Baca Ulang"}
-                </Button>
+                  <Button
+                    className="bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg px-4 py-2"
+                    onClick={() => handleSelesai(m.id)}
+                  >
+                    {m.status === "belum"
+                      ? "Mulai Baca"
+                      : m.status === "proses"
+                      ? "Tandai Selesai"
+                      : "Baca Ulang"}
+                  </Button>
+                </Link>
 
                 <span
                   className={`text-sm font-medium ${
