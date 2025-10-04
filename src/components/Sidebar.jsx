@@ -17,8 +17,13 @@ export default function Sidebar() {
 
   return (
     <div className="flex flex-col p-6 h-full w-full">
-      <h1 className="text-2xl font-bold text-primary mb-8 text-center">
-        💰RupiahRapi
+      <h1 className="text-2xl font-bold text-primary mb-8 text-center flex items-center justify-center gap-0.5">
+        <img
+          src="/images/logo/logo.png"
+          alt="RupiahRapi Logo"
+          className="w-6 h-6 object-contain"
+        />
+        RupiahRapi
       </h1>
       <nav className="flex flex-col space-y-2">
         {menus.map((menu) => {
