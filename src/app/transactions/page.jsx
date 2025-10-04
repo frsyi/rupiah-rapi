@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useTransactionStore } from "@/store/useTransactionStore";
 import {
   Table,
   TableBody,
@@ -18,51 +19,47 @@ import {
 } from "@/components/ui/select";
 
 export default function Transaksi() {
+  const {
+    transactions,
+    fetchTransactions,
+    addTransaction,
+    deleteTransaction,
+    loading,
+    error,
+  } = useTransactionStore();
+
   const [jenis, setJenis] = useState("Pemasukan");
   const [kategori, setKategori] = useState("Usaha");
-  const [keterangan, setKeterangan] = useState("Keterangan");
   const [jumlah, setJumlah] = useState("");
+  const [keterangan, setKeterangan] = useState("");
 
-  const [transactions, setTransactions] = useState([
-    {
-      id: 1,
-      kategori: "Usaha",
-      jenis: "Pemasukan",
-      jumlah: 50000,
-      tanggal: "2025-09-27",
-    },
-    {
-      id: 2,
-      kategori: "Pribadi",
-      jenis: "Pengeluaran",
-      jumlah: 20000,
-      tanggal: "2025-09-27",
-    },
-    {
-      id: 3,
-      kategori: "Usaha",
-      jenis: "Pemasukan",
-      jumlah: 150000,
-      tanggal: "2025-09-26",
-    },
-  ]);
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!jumlah || Number(jumlah) <= 0) return;
+
     const newTransaction = {
-      id: transactions.length + 1,
       kategori,
       jenis,
+      keterangan,
       jumlah: Number(jumlah),
       tanggal: new Date().toISOString().split("T")[0],
     };
-    setTransactions([newTransaction, ...transactions]);
+
+    await addTransaction(newTransaction);
+
+    // reset form
     setJumlah("");
+    setKeterangan("");
   };
 
   // state filter
-  const [filterBulan, setFilterBulan] = useState("2025-09");
+  const [filterBulan, setFilterBulan] = useState(
+    new Date().toISOString().slice(0, 7)
+  );
   const [filterJenis, setFilterJenis] = useState("Semua");
   const [filterKategori, setFilterKategori] = useState("Semua");
 
@@ -77,10 +74,10 @@ export default function Transaksi() {
 
   return (
     <div className="space-y-8">
+      {/* FORM INPUT */}
       <div className="bg-white p-6 rounded-2xl shadow-md">
         <h2 className="text-2xl font-bold">Catat Keuangan</h2>
 
-        {/* Form Input */}
         <form
           onSubmit={handleSubmit}
           className="bg-white p-4 mb-6 grid gap-4 md:grid-cols-2"
@@ -112,7 +109,7 @@ export default function Transaksi() {
             type="text"
             placeholder="Keterangan"
             className="border p-2 rounded col-span-2"
-            // value={keterangan}
+            value={keterangan}
             onChange={(e) => setKeterangan(e.target.value)}
           />
           <button
@@ -122,55 +119,60 @@ export default function Transaksi() {
             Simpan
           </button>
         </form>
+
+        {loading && <p className="text-gray-500">Loading...</p>}
+        {error && <p className="text-red-500">{error}</p>}
       </div>
 
+      {/* RIWAYAT TRANSAKSI */}
       <div className="bg-white p-6 rounded-2xl shadow-md">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          Riwayat Transaksi
-        </h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold text-gray-800">
+            {" "}
+            Riwayat Transaksi
+          </h2>
 
-        {/* Filter */}
-        <div className="flex flex-wrap gap-4 items-center mb-4">
-          <div>
-            <span className="text-gray-700 font-medium mr-2">Bulan:</span>
-            <Select value={filterBulan} onValueChange={setFilterBulan}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Pilih bulan" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="2025-09">September 2025</SelectItem>
-                <SelectItem value="2025-08">Agustus 2025</SelectItem>
-                <SelectItem value="2025-07">Juli 2025</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <div className="flex flex-wrap gap-4 items-end">
+            {/* Filter Bulan */}
+            <div className="flex flex-col items-start">
+              <span className="text-gray-700 font-medium mb-1">Bulan</span>
+              <input
+                type="month"
+                className="border rounded p-2"
+                value={filterBulan}
+                onChange={(e) => setFilterBulan(e.target.value)}
+              />
+            </div>
 
-          <div>
-            <span className="text-gray-700 font-medium mr-2">Jenis:</span>
-            <Select value={filterJenis} onValueChange={setFilterJenis}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Pilih jenis" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Semua">Semua</SelectItem>
-                <SelectItem value="Pemasukan">Pemasukan</SelectItem>
-                <SelectItem value="Pengeluaran">Pengeluaran</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            {/* Filter Jenis */}
+            <div className="flex flex-col items-start">
+              <span className="text-gray-700 font-medium mb-1">Jenis</span>
+              <Select value={filterJenis} onValueChange={setFilterJenis}>
+                <SelectTrigger className="w-[160px]">
+                  <SelectValue placeholder="Pilih jenis" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Semua">Semua</SelectItem>
+                  <SelectItem value="Pemasukan">Pemasukan</SelectItem>
+                  <SelectItem value="Pengeluaran">Pengeluaran</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div>
-            <span className="text-gray-700 font-medium mr-2">Kategori:</span>
-            <Select value={filterKategori} onValueChange={setFilterKategori}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Pilih kategori" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Semua">Semua</SelectItem>
-                <SelectItem value="Usaha">Usaha</SelectItem>
-                <SelectItem value="Pribadi">Pribadi</SelectItem>
-              </SelectContent>
-            </Select>
+            {/* Filter Kategori */}
+            <div className="flex flex-col items-start">
+              <span className="text-gray-700 font-medium mb-1">Kategori</span>
+              <Select value={filterKategori} onValueChange={setFilterKategori}>
+                <SelectTrigger className="w-[160px]">
+                  <SelectValue placeholder="Pilih kategori" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Semua">Semua</SelectItem>
+                  <SelectItem value="Usaha">Usaha</SelectItem>
+                  <SelectItem value="Pribadi">Pribadi</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
@@ -182,6 +184,7 @@ export default function Transaksi() {
               <TableHead>Jenis</TableHead>
               <TableHead>Kategori</TableHead>
               <TableHead className="text-right">Jumlah</TableHead>
+              <TableHead className="text-center w-[100px]">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -208,11 +211,19 @@ export default function Transaksi() {
                   <TableCell className="text-right font-semibold text-gray-800">
                     Rp {t.jumlah.toLocaleString("id-ID")}
                   </TableCell>
+                  <TableCell className="text-center">
+                    <button
+                      onClick={() => deleteTransaction(t.id)}
+                      className="text-red-500 hover:text-red-700 font-medium cursor-pointer"
+                    >
+                      Hapus
+                    </button>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-gray-500">
+                <TableCell colSpan={5} className="text-center text-gray-500">
                   Tidak ada transaksi sesuai filter
                 </TableCell>
               </TableRow>
