@@ -70,7 +70,6 @@ export default function Transaksi() {
       className: "bg-green-600 text-white border-none",
     });
 
-    // reset form
     setJumlah("");
     setKeterangan("");
   };
@@ -105,15 +104,15 @@ export default function Transaksi() {
   return (
     <div className="space-y-8">
       {/* FORM INPUT */}
-      <div className="bg-white p-6 rounded-2xl shadow-md">
-        <h2 className="text-2xl font-bold">Catat Keuangan</h2>
+      <div className="bg-white p-4 md:p-6 rounded-2xl shadow-md">
+        <h2 className="text-xl md:text-2xl font-bold mb-4">Catat Keuangan</h2>
 
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-4 mb-6 grid gap-4 md:grid-cols-2"
+          className="bg-white mb-6 grid gap-3 sm:gap-4 sm:grid-cols-2"
         >
           <select
-            className="border p-2 rounded"
+            className="border p-2 rounded w-full"
             value={jenis}
             onChange={(e) => setJenis(e.target.value)}
           >
@@ -121,7 +120,7 @@ export default function Transaksi() {
             <option value="Pengeluaran">Pengeluaran</option>
           </select>
           <select
-            className="border p-2 rounded"
+            className="border p-2 rounded w-full"
             value={kategori}
             onChange={(e) => setKategori(e.target.value)}
           >
@@ -131,7 +130,7 @@ export default function Transaksi() {
           <input
             type="number"
             placeholder="Jumlah"
-            className="border p-2 rounded col-span-2"
+            className="border p-2 rounded sm:col-span-2 w-full"
             min={0}
             required
             value={jumlah}
@@ -140,14 +139,14 @@ export default function Transaksi() {
           <input
             type="text"
             placeholder="Keterangan"
-            className="border p-2 rounded col-span-2"
+            className="border p-2 rounded sm:col-span-2 w-full"
             required
             value={keterangan}
             onChange={(e) => setKeterangan(e.target.value)}
           />
           <button
             type="submit"
-            className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg shadow col-span-2 font-semibold cursor-pointer"
+            className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg shadow sm:col-span-2 font-semibold cursor-pointer"
           >
             Simpan
           </button>
@@ -158,20 +157,21 @@ export default function Transaksi() {
       </div>
 
       {/* RIWAYAT TRANSAKSI */}
-      <div className="bg-white p-6 rounded-2xl shadow-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-800">
-            {" "}
+      <div className="bg-white p-4 md:p-6 rounded-2xl shadow-md">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
+          <h2 className="text-lg md:text-2xl font-bold text-gray-800">
             Riwayat Transaksi
           </h2>
 
           <div className="flex flex-wrap gap-4 items-end">
             {/* Filter Bulan */}
             <div className="flex flex-col items-start">
-              <span className="text-gray-700 font-medium mb-1">Bulan</span>
+              <span className="text-gray-700 font-medium mb-1 text-sm">
+                Bulan
+              </span>
               <input
                 type="month"
-                className="border rounded p-2"
+                className="border rounded p-2 text-sm w-[140px] md:w-[160px]"
                 value={filterBulan}
                 onChange={(e) => setFilterBulan(e.target.value)}
               />
@@ -179,9 +179,11 @@ export default function Transaksi() {
 
             {/* Filter Jenis */}
             <div className="flex flex-col items-start">
-              <span className="text-gray-700 font-medium mb-1">Jenis</span>
+              <span className="text-gray-700 font-medium mb-1 text-sm">
+                Jenis
+              </span>
               <Select value={filterJenis} onValueChange={setFilterJenis}>
-                <SelectTrigger className="w-[160px]">
+                <SelectTrigger className="w-[140px] md:w-[160px] text-sm">
                   <SelectValue placeholder="Pilih jenis" />
                 </SelectTrigger>
                 <SelectContent>
@@ -194,9 +196,11 @@ export default function Transaksi() {
 
             {/* Filter Kategori */}
             <div className="flex flex-col items-start">
-              <span className="text-gray-700 font-medium mb-1">Kategori</span>
+              <span className="text-gray-700 font-medium mb-1 text-sm">
+                Kategori
+              </span>
               <Select value={filterKategori} onValueChange={setFilterKategori}>
-                <SelectTrigger className="w-[160px]">
+                <SelectTrigger className="w-[140px] md:w-[160px] text-sm">
                   <SelectValue placeholder="Pilih kategori" />
                 </SelectTrigger>
                 <SelectContent>

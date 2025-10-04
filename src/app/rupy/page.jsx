@@ -63,8 +63,8 @@ export default function RupyAI() {
         </p>
       </div>
 
-      <Card className="w-full h-[500px] flex flex-col rounded-2xl shadow-md">
-        <CardContent className="flex-1 overflow-y-auto space-y-4 p-4 bg-gray-50">
+      <Card className="w-full h-[60vh] md:h-[500px] flex flex-col rounded-2xl shadow-md">
+        <CardContent className="flex-1 overflow-y-auto space-y-4 p-3 md:p-4 bg-gray-50">
           {messages.map((msg, i) => (
             <div
               key={i}

@@ -112,9 +112,9 @@ export default function Dashboard() {
   if (error) return <p className="text-center text-red-600 p-4">❌ {error}</p>;
 
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-gradient-to-r from-[#1290a0] to-[#38b2ac] rounded-2xl shadow-md p-6 flex items-center gap-4 text-white">
+    <div className="space-y-6 md:space-y-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+        <div className="bg-gradient-to-r from-[#1290a0] to-[#38b2ac] rounded-2xl shadow-md p-4 md:p-6 flex items-center gap-3 md:gap-4 text-white">
           <div className="bg-white/20 p-3 rounded-full">
             <Wallet className="text-white w-6 h-6" />
           </div>
@@ -126,7 +126,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-pink-500 to-rose-400 rounded-2xl shadow-md p-6 flex items-center gap-4 text-white">
+        <div className="bg-gradient-to-r from-pink-500 to-rose-400 rounded-2xl shadow-md p-4 md:p-6 flex items-center gap-3 md:gap-4 text-white">
           <div className="bg-white/20 p-3 rounded-full">
             <Receipt className="text-white w-6 h-6" />
           </div>
@@ -139,21 +139,21 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-2xl shadow-md">
-        <div className="flex justify-between items-center mb-4">
+      <div className="bg-white p-4 md:p-6 rounded-2xl shadow-md">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-4">
           <h2 className="font-semibold text-gray-700 text-lg flex items-center gap-2">
             <TrendingUp className="text-green-600 w-5 h-5" /> Laporan Usaha
             Harian
           </h2>
           <input
             type="month"
-            className="border rounded p-2 text-sm"
+            className="border rounded p-2 text-sm w-full md:w-auto"
             value={filterBulan}
             onChange={(e) => setFilterBulan(e.target.value)}
           />
         </div>
 
-        <div className="w-full h-80">
+        <div className="w-full h-60 md:h-80">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data}>
               <CartesianGrid strokeDasharray="3 3" />
