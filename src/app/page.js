@@ -4,42 +4,66 @@ import {
   PlusCircle,
   BookOpen,
   Receipt,
-  Bot,
   TrendingUp,
   Wallet,
 } from "lucide-react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTransactionStore } from "@/store/useTransactionStore";
 
 export default function Dashboard() {
   const router = useRouter();
+  const { transactions, fetchTransactions, loading, error } =
+    useTransactionStore();
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
+
+  const saldoUsaha = transactions.reduce((acc, t) => {
+    if (t.kategori === "Usaha") {
+      return t.jenis === "Pemasukan"
+        ? acc + Number(t.jumlah)
+        : acc - Number(t.jumlah);
+    }
+    return acc;
+  }, 0);
+
+  const saldoPribadi = transactions.reduce((acc, t) => {
+    if (t.kategori === "Pribadi") {
+      return t.jenis === "Pemasukan"
+        ? acc + Number(t.jumlah)
+        : acc - Number(t.jumlah);
+    }
+    return acc;
+  }, 0);
+
+  const pemasukan = transactions
+    .filter((t) => t.kategori === "Usaha" && t.jenis === "Pemasukan")
+    .reduce((acc, t) => acc + Number(t.jumlah), 0);
+
+  const pengeluaran = transactions
+    .filter((t) => t.kategori === "Usaha" && t.jenis === "Pengeluaran")
+    .reduce((acc, t) => acc + Number(t.jumlah), 0);
+
+  const profit = pemasukan - pengeluaran;
+  const progress = pemasukan > 0 ? Math.round((profit / pemasukan) * 100) : 0;
+
+  const riwayatCatatan = [...transactions]
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // urutkan terbaru
+    .slice(0, 5);
+
   const user = {
     name: "Ibu Siti",
-    saldoUsaha: 2500000,
-    saldoPribadi: 750000,
     points: 120,
   };
 
-  const pemasukan = 1200000;
-  const pengeluaran = 950000;
-  const profit = pemasukan - pengeluaran;
-  const progress = Math.round((profit / pemasukan) * 100);
-
-  const riwayatCatatan = [
-    { id: 1, type: "Pemasukan", amount: 200000, date: "27 Sep 2025" },
-    { id: 2, type: "Pengeluaran", amount: 75000, date: "26 Sep 2025" },
-    { id: 3, type: "Pemasukan", amount: 150000, date: "25 Sep 2025" },
-  ];
+  if (loading) return <p className="text-center p-4">⏳ Loading data...</p>;
+  if (error) return <p className="text-center text-red-600 p-4">❌ {error}</p>;
 
   return (
     <div className="space-y-8">
-      <div className="bg-gradient-to-r from-blue-100 to-blue-50 border-l-4 border-blue-500 p-4 rounded-lg shadow-sm">
-        <p className="text-blue-800 font-medium flex items-center gap-2">
-          🔔 Utang bahan baku jatuh tempo dalam 2 hari!
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Saldo Usaha */}
         <div className="bg-gradient-to-r from-[#1290a0] to-[#38b2ac] rounded-2xl shadow-md p-6 flex items-center gap-4 text-white">
           <div className="bg-white/20 p-3 rounded-full">
             <Wallet className="text-white w-6 h-6" />
@@ -47,7 +71,7 @@ export default function Dashboard() {
           <div>
             <h3 className="text-sm font-medium opacity-90">Saldo Usaha</h3>
             <p className="text-2xl font-bold mt-1">
-              Rp {user.saldoUsaha.toLocaleString("id-ID")}
+              Rp {saldoUsaha.toLocaleString("id-ID")}
             </p>
           </div>
         </div>
@@ -60,7 +84,7 @@ export default function Dashboard() {
           <div>
             <h3 className="text-sm font-medium opacity-90">Saldo Pribadi</h3>
             <p className="text-2xl font-bold mt-1">
-              Rp {user.saldoPribadi.toLocaleString("id-ID")}
+              Rp {saldoPribadi.toLocaleString("id-ID")}
             </p>
           </div>
         </div>
@@ -117,16 +141,17 @@ export default function Dashboard() {
               className="flex justify-between py-3 text-sm hover:bg-gray-50 px-2 rounded-md"
             >
               <span className="text-gray-600">
-                {item.date} • {item.type}
+                {new Date(item.tanggal).toLocaleDateString("id-ID")} •{" "}
+                {item.jenis}
               </span>
               <span
                 className={
-                  item.type === "Pemasukan"
+                  item.jenis === "Pemasukan"
                     ? "text-green-600 font-medium"
                     : "text-red-600 font-medium"
                 }
               >
-                Rp {item.amount.toLocaleString("id-ID")}
+                Rp {Number(item.jumlah).toLocaleString("id-ID")}
               </span>
             </li>
           ))}
